@@ -9,6 +9,7 @@ import (
 type RegisterRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Name     string `json:"name"`
 }
 
 func registerHandler(w http.ResponseWriter, r *http.Request) {
@@ -24,21 +25,16 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	req.Email = strings.TrimSpace(strings.ToLower(req.Email))
-	if req.Email == "" || req.Password == "" {
-		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "email and password are required"})
+	req.Name = strings.TrimSpace(req.Name)
+	if req.Email == "" || req.Password == "" || req.Name == "" {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "email, password and name are required"})
 		return
 	}
 
-	usersMu.Lock()
-	defer usersMu.Unlock()
-	if _, exists := users[req.Email]; exists {
-		writeJSON(w, http.StatusConflict, map[string]string{"error": "email already registered"})
+	if err := registerPocketBaseUser(r.Context(), req); err != nil {
+		status := statusCodeForError(err, http.StatusBadRequest)
+		writeJSON(w, status, map[string]string{"error": err.Error()})
 		return
-	}
-
-	users[req.Email] = User{
-		Email:        req.Email,
-		PasswordHash: hashPassword(req.Password),
 	}
 
 	writeJSON(w, http.StatusCreated, map[string]string{

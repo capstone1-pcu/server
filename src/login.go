@@ -29,22 +29,17 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	usersMu.RLock()
-	user, ok := users[req.Email]
-	usersMu.RUnlock()
-	if !ok || user.PasswordHash != hashPassword(req.Password) {
-		writeJSON(w, http.StatusUnauthorized, map[string]string{"error": "invalid email or password"})
-		return
-	}
-
-	token, err := issueToken(user.Email)
+	auth, err := loginPocketBaseUser(r.Context(), req)
 	if err != nil {
-		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to create session"})
+		status := statusCodeForError(err, http.StatusUnauthorized)
+		writeJSON(w, status, map[string]string{"error": err.Error()})
 		return
 	}
 
 	writeJSON(w, http.StatusOK, map[string]string{
 		"message": "로그인 성공",
-		"token":   token,
+		"token":   auth.Token,
+		"email":   auth.Record.Email,
+		"name":    auth.Record.Name,
 	})
 }
