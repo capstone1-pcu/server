@@ -1,0 +1,24 @@
+{
+  "name": "capstone1-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ghkgmlrud-svg/capstone1-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ghkgmlrud-svg/capstone1-project/issues"
+  },
+  "homepage": "https://github.com/ghkgmlrud-svg/capstone1-project#readme",
+  "dependencies": {
+    "pocketbase": "^0.26.8"
+  }
+}
