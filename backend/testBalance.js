@@ -1,11 +1,9 @@
-const {
-  getAttackDistance,
-  convertDistanceToAttackCount,
-  calculateDamage,
-  getStatUpgradeCost,
-} = require("./utils/balanceUtils");
+const { calculateFinalStats } = require("./services/statService");
 
-console.log("AGI 5 공격 필요 거리:", getAttackDistance(5));
-console.log("1000m 이동 시 공격 횟수:", convertDistanceToAttackCount(1000, 5));
-console.log("ATK 20, DEF 5 데미지:", calculateDamage(20, 5));
-console.log("스탯 10 강화 비용:", getStatUpgradeCost(10));
+const finalStats = calculateFinalStats(
+  { hp: 100, attack: 10, defense: 5, agility: 5 },
+  { hp: 20, attack: 3, defense: 2, agility: 1 },
+  { hp: 50, attack: 5, defense: 4, agility: 3 }
+);
+
+console.log("최종 스탯:", finalStats);
