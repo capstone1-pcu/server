@@ -1,0 +1,23 @@
+FROM alpine:3.20
+
+ARG PB_VERSION=0.23.8
+
+RUN apk add --no-cache ca-certificates curl unzip tzdata && \
+    adduser -D -H -u 10001 pocketbase && \
+    curl -fsSL -o /tmp/pocketbase.zip "https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip" && \
+    unzip /tmp/pocketbase.zip -d /usr/local/bin && \
+    chmod +x /usr/local/bin/pocketbase && \
+    rm -f /tmp/pocketbase.zip
+
+ENV TZ=Asia/Seoul
+WORKDIR /pb
+
+RUN mkdir -p /pb/pb_data /pb/pb_public /pb/pb_migrations && \
+    chown -R pocketbase /pb
+
+VOLUME ["/pb/pb_data"]
+
+EXPOSE 8090
+USER pocketbase
+
+CMD ["pocketbase", "serve", "--http", "0.0.0.0:8090", "--dir", "/pb/pb_data"]

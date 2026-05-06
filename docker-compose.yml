@@ -1,0 +1,27 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth-api
+    environment:
+      POCKETBASE_URL: http://pocketbase:8090
+    ports:
+      - "8080:8080"
+    depends_on:
+      - pocketbase
+    restart: unless-stopped
+
+  pocketbase:
+    build:
+      context: .
+      dockerfile: Dockerfile.pocketbase
+    container_name: pocketbase
+    ports:
+      - "8090:8090"
+    volumes:
+      - pocketbase_data:/pb/pb_data
+    restart: unless-stopped
+
+volumes:
+  pocketbase_data:
